@@ -128,7 +128,17 @@ export async function sendMessage(
           break;
         case "message":
           if (textMessage) {
-            textMessage.content += event.data.delta.content;
+            if (Array.isArray(event.data.delta.content)) {
+              // Handle array content format
+              for (const item of event.data.delta.content) {
+                if (item.type === "text" && typeof item.text === "string") {
+                  textMessage.content += item.text;
+                }
+              }
+            } else {
+              // Handle string content format
+              textMessage.content += event.data.delta.content;
+            }
             updateMessage({
               id: textMessage.id,
               content: textMessage.content,
