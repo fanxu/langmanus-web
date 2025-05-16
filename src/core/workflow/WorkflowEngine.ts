@@ -84,6 +84,11 @@ export class WorkflowEngine {
               for (const item of event.data.delta.content) {
                 if (item.type === "text" && typeof item.text === "string") {
                   currentThinkingTask!.payload.text += item.text;
+                } else if (item.type === "thinking" && typeof item.thinking === "string") {
+                  if (currentThinkingTask!.payload.reason === undefined) {
+                    currentThinkingTask!.payload.reason = "";
+                  }
+                  currentThinkingTask!.payload.reason += item.thinking;
                 }
               }
             } else {
