@@ -79,7 +79,17 @@ export class WorkflowEngine {
             if (currentThinkingTask!.payload.text === undefined) {
               currentThinkingTask!.payload.text = "";
             }
-            currentThinkingTask!.payload.text += event.data.delta.content;
+            if (Array.isArray(event.data.delta.content)) {
+              // Handle array content format
+              for (const item of event.data.delta.content) {
+                if (item.type === "text" && typeof item.text === "string") {
+                  currentThinkingTask!.payload.text += item.text;
+                }
+              }
+            } else {
+              // Handle string content format
+              currentThinkingTask!.payload.text += event.data.delta.content;
+            }
           } else if (event.data.delta.reasoning_content) {
             if (currentThinkingTask!.payload.reason === undefined) {
               currentThinkingTask!.payload.reason = "";
